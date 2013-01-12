@@ -112,7 +112,7 @@ class WP_Audio_Player {
 	/**
 	 * Renders the input field in which to paste the URL of the audio file.
 	 *
-	 * @param	object	$post	The post to which this meta box is associated.
+	 * @param   object   $post   The post to which this meta box is associated.
 	 */
 	public function display_audio_url_input( $post ) {
 
@@ -130,7 +130,7 @@ class WP_Audio_Player {
 	/**
 	 * Saves the post data for the Audio URL to post defined by the incoming ID.
 	 *
-	 * @param	string $post_id	The ID of the post to which we're saving the post data.
+	 * @param   string   $post_id   The ID of the post to which we're saving the post data.
 	 */
 	public function save_audio_url( $post_id ) {
 
@@ -174,8 +174,8 @@ class WP_Audio_Player {
 	/**
 	 * Appends the audio player to the end of the content, if it's been defined for the given post.
 	 *
-	 * @param	string	$content	The post content to which we're appending the player.
-	 * @return	string				The content with the player at the bottom of the content.
+	 * @param   string   $content   The post content to which we're appending the player.
+	 * @return  string              The content with the player at the bottom of the content.
 	 */
 	public function display_audio_content( $content ) {
 
@@ -204,7 +204,7 @@ class WP_Audio_Player {
 	/**
 	 * Adds a 'Feature Audio' meta box to the specified post type.
 	 *
-	 * @param	string	$post_type	The post type to which we're adding the meta box.
+	 * @param   string   $post_type   The post type to which we're adding the meta box.
 	 */
 	private function add_meta_box( $post_type ) {
 
