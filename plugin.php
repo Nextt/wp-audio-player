@@ -93,10 +93,10 @@ class WP_Audio_Player {
 
 		// First, get all of the post types in the theme
 		$args = array(
-			'public'				=>	true,
-			'publicly_queryable'	=>	true,
-			'exclude_from_search'	=>	false,
-			'show_in_nav_menus'		=>	true
+			'public'              => true,
+			'publicly_queryable'  => true,
+			'exclude_from_search' => false,
+			'show_in_nav_menus'   => true
 		);
 
 		// Next, build up the string used to represent the post types
