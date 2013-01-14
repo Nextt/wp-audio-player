@@ -121,7 +121,7 @@ class WP_Audio_Player {
 		$html  = '<span class="description">';
 		$html .= __( 'Place the URL to your audio file here.', 'wp-audio-player' );
 		$html .= '</span>';
-		$html .= '<input type="text" id="wp_audio_url" name="wp_audio_url" value="' . get_post_meta( $post->ID, 'wp_audio_url', true ) . '" />';
+		$html .= '<input type="text" id="wp_audio_url" name="wp_audio_url" value="' . esc_url( get_post_meta( $post->ID, 'wp_audio_url', true ) ) . '" />';
 
 		echo $html;
 
@@ -186,7 +186,7 @@ class WP_Audio_Player {
 			$audio_url = get_post_meta( get_the_ID(), 'wp_audio_url', true );
 			if( 0 != strlen( $audio_url ) ) {
 
-				$audio_html = '<audio src="' . $audio_url . '" preload="auto" controls></audio>';
+				$audio_html = '<audio src="' . esc_url ( $audio_url ) . '" preload="auto" controls></audio>';
 				$content .= $audio_html;
 
 			} // end if
