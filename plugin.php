@@ -3,7 +3,7 @@
 Plugin Name: WP Audio Player
 Plugin URI: http://tommcfarlin.com/wp-audio-player/
 Description: An easy way to embed an audio file in your posts using the responsive and touch-friendly audio player by Codrops.
-Version: 1.2
+Version: 1.3
 Author: Tom McFarlin
 Author URI: http://tommcfarlin.com/
 Author Email: tom@tommcfarlin.com
@@ -79,7 +79,10 @@ class WP_Audio_Player {
 	 * Registers and enqueues plugin-specific scripts.
 	 */
 	public function register_plugin_scripts() {
+	
 		wp_enqueue_script( 'wp-audio-player', plugins_url( 'wp-audio-player/js/audioplayer.min.js' ) );
+		wp_enqueue_script( 'wp-audio-player-plugin', plugins_url( 'wp-audio-player/js/plugin.min.js' ) );
+		
 	} // end register_plugin_scripts
 
 	/*--------------------------------------------*
@@ -119,7 +122,7 @@ class WP_Audio_Player {
 		wp_nonce_field( plugin_basename( __FILE__ ), 'wp_audio_player_nonce' );
 
 		$html  = '<span class="description">';
-		$html .= __( 'Place the URL to your audio file here.', 'wp-audio-player' );
+			$html .= __( 'Place the URL to your audio file here.', 'wp-audio-player' );
 		$html .= '</span>';
 		$html .= '<input type="text" id="wp_audio_url" name="wp_audio_url" value="' . esc_url( get_post_meta( $post->ID, 'wp_audio_url', true ) ) . '" />';
 
@@ -186,7 +189,7 @@ class WP_Audio_Player {
 			$audio_url = get_post_meta( get_the_ID(), 'wp_audio_url', true );
 			if( 0 != strlen( $audio_url ) ) {
 
-				$audio_html = '<audio src="' . esc_url ( $audio_url ) . '" preload="auto" controls></audio>';
+				$audio_html = '<audio src="' . esc_url ( $audio_url ) . '" preload="auto" controls class="wp-audio-player"></audio>';
 				$content .= $audio_html;
 
 			} // end if
