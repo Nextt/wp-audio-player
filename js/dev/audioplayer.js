@@ -73,7 +73,7 @@
 			else if( canPlayType( audioFile ) ) isSupport = true;
 
 			var thePlayer = $( '<div class="' + params.classPrefix + '">' + ( isSupport ? $( '<div>' ).append( $this.eq( 0 ).clone() ).html() : '<embed src="' + audioFile + '" width="0" height="0" volume="100" autostart="' + isAutoPlay.toString() +'" loop="' + isLoop.toString() + '" />' ) + '<div class="' + cssClass.playPause + '" title="' + params.strPlay + '"><a href="#">' + params.strPlay + '</a></div></div>' ),
-				theAudio  = isSupport ? thePlayer.find( 'audio' ) : thePlayer.find( 'embed' ), theAudio = theAudio.get( 0 );
+				theAudio  = isSupport ? $('audio') : $('embed'), theAudio = theAudio.get( 0 );
 
 			if( isSupport )
 			{
@@ -103,7 +103,8 @@
 						barLoaded.width( ( theAudio.buffered.end( 0 ) / theAudio.duration ) * 100 + '%' );
 						if( theAudio.buffered.end( 0 ) >= theAudio.duration )
 							clearInterval( updateLoadBar );
-					}, 100 );
+								
+					}, 1000 );
 
 				var volumeTestDefault = theAudio.volume, volumeTestValue = theAudio.volume = 0.111;
 				if( Math.round( theAudio.volume * 1000 ) / 1000 == volumeTestValue ) theAudio.volume = volumeTestDefault;
