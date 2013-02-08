@@ -33,6 +33,12 @@ if( ! defined( 'WP_AUDIO_PLAYER_VERSION' ) ) {
 class WP_Audio_Player {
 
 	/*--------------------------------------------*
+	 * Attributes
+	 *--------------------------------------------*/
+
+	 private $audio_player_nonce = 'wp_audio_player_nonce';
+
+	/*--------------------------------------------*
 	 * Constructor
 	 *--------------------------------------------*/
 
@@ -88,7 +94,7 @@ class WP_Audio_Player {
 	public function register_plugin_scripts() {
 	
 		wp_enqueue_script( 'wp-audio-player', plugins_url( 'wp-audio-player/js/audioplayer.min.js' ), array( 'jquery' ), WP_AUDIO_PLAYER_VERSION, true );
-		wp_enqueue_script( 'wp-audio-player-plugin', plugins_url( 'wp-audio-player/js/plugin.min.js' ), array( 'wp-audio-player' ), WP_AUDIO_PLAYER_VERSION, true );
+		wp_enqueue_script( 'wp-audio-player-plugin', plugins_url( 'wp-audio-player/js/plugin.min.js' ), array( 'jquery', 'wp-audio-player' ), WP_AUDIO_PLAYER_VERSION, true );
 		
 	} // end register_plugin_scripts
 
@@ -126,7 +132,7 @@ class WP_Audio_Player {
 	 */
 	public function display_audio_url_input( $post ) {
 
-		wp_nonce_field( plugin_basename( __FILE__ ), 'wp_audio_player_nonce' );
+		wp_nonce_field( plugin_basename( __FILE__ ), $this->audio_player_nonce );
 
 		$html  = '<span class="description">';
 			$html .= __( 'Place the URL to your audio file here.', 'wp-audio-player' );
@@ -144,25 +150,9 @@ class WP_Audio_Player {
 	 */
 	public function save_audio_url( $post_id ) {
 
-		if( isset( $_POST['wp_audio_player_nonce'] ) && isset( $_POST['post_type'] ) ) {
-
-			// Don't save if the user hasn't submitted the changes
-			if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-				return;
-			} // end if
-
-			// Verify that the input is coming from the proper form
-			if( ! wp_verify_nonce( $_POST['wp_audio_player_nonce'], plugin_basename( __FILE__ ) ) ) {
-				return;
-			} // end if
-
-			// Make sure the user has permissions to post
-			if( 'post' == $_POST['post_type'] ) {
-				if( ! current_user_can( 'edit_post', $post_id ) ) {
-					return;
-				} // end if
-			} // end if/else
-
+		// Make sure the user can save the meta data
+		if( $this->user_can_save( $post_id, $this->audio_player_nonce ) ) {
+		
 			// Read the post URL
 			$wp_audio_url = '';
 			if( isset( $_POST['wp_audio_url'] ) ) {
@@ -176,8 +166,8 @@ class WP_Audio_Player {
 
 			// Update it for this post.
 			update_post_meta( $post_id, 'wp_audio_url', $wp_audio_url );
-
-		} // end if
+		
+		} // end if/else
 
 	} // end save_audio_url
 
@@ -228,6 +218,25 @@ class WP_Audio_Player {
 		);
 
 	} // end add_meta_box
+
+	/**
+	 * Determines whether or not the current user has the ability to save meta data associated with this post.
+	 *
+	 * @param		int		$post_id	The ID of the post being save
+	 * @param		bool				Whether or not the user has the ability to save this post.
+	 * @version		1.0
+	 * @since		1.4
+	 */
+	private function user_can_save( $post_id, $nonce ) {
+		
+	    $is_autosave = wp_is_post_autosave( $post_id );
+	    $is_revision = wp_is_post_revision( $post_id );
+	    $is_valid_nonce = ( isset( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], plugin_basename( __FILE__ ) ) ) ? true : false;
+	    
+	    // Return true if the user is able to save; otherwise, false.
+	    return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
+	
+	} // end user_can_save
 
 } // end class
 

@@ -43,6 +43,7 @@ In version 1.0, no; however, this is a planned feature assuming that the plugin 
 = 1.4 =
 * Adding a new look and feel compliments of the design by the Codrops theme
 * Making sure that embeds from third-party domains work (such as Amazon)
+* Improved the security for saving data in the WordPress Dashboard
 
 = 1.3 =
 * Properly escaping URL's when they are returned to the browser (Thanks <a href="https://github.com/tommcfarlin/wp-audio-player/pull/4">pdewouters</a>!)
