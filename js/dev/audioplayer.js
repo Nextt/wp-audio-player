@@ -56,7 +56,7 @@
 				audioFile  = $this.attr( 'src' ),
 				isAutoPlay = $this.get( 0 ).getAttribute( 'autoplay' ), isAutoPlay = isAutoPlay === '' || isAutoPlay === 'autoplay' ? true : false,
 				isLoop	   = $this.get( 0 ).getAttribute( 'loop' ),		isLoop	   = isLoop		=== '' || isLoop	 === 'loop'		? true : false,
-				isSupport  = false;
+				isSupport  = true;
 
 			if( typeof audioFile === 'undefined' )
 			{
@@ -73,7 +73,7 @@
 			else if( canPlayType( audioFile ) ) isSupport = true;
 
 			var thePlayer = $( '<div class="' + params.classPrefix + '">' + ( isSupport ? $( '<div>' ).append( $this.eq( 0 ).clone() ).html() : '<embed src="' + audioFile + '" width="0" height="0" volume="100" autostart="' + isAutoPlay.toString() +'" loop="' + isLoop.toString() + '" />' ) + '<div class="' + cssClass.playPause + '" title="' + params.strPlay + '"><a href="#">' + params.strPlay + '</a></div></div>' ),
-				theAudio  = isSupport ? $('audio') : $('embed'), theAudio = theAudio.get( 0 );
+				theAudio  = isSupport ? thePlayer.find( 'audio' ) : thePlayer.find( 'embed' ), theAudio = theAudio.get( 0 );
 
 			if( isSupport )
 			{
@@ -99,12 +99,27 @@
 						theAudio.volume = Math.abs( ( theRealEvent.pageY - ( volumeAdjuster.offset().top + volumeAdjuster.height() ) ) / volumeAdjuster.height() );
 					},
 					updateLoadBar = setInterval( function()
-					{
-						barLoaded.width( ( theAudio.buffered.end( 0 ) / theAudio.duration ) * 100 + '%' );
-						if( theAudio.buffered.end( 0 ) >= theAudio.duration )
-							clearInterval( updateLoadBar );
+					{	
+						try {
+							barLoaded.width( ( theAudio.buffered.end( 0 ) / theAudio.duration ) * 100 + '%' );
+							if( theAudio.buffered.end( 0 ) >= theAudio.duration ) {
+								clearInterval( updateLoadBar );								
+							} else {
+							
+								$('#wp-audio-player-loading').hide();
+								$('.audioplayer').fadeIn( 'fast' );
 								
-					}, 1000 );
+							} // end if/else
+						} catch(ex) {
+						
+							if( 'INDEX_SIZE_ERR' === ex.name ) {
+								if( $('.audioplayer').is(':visible') ) {
+									$('.audioplayer').attr('style', 'display:none;');
+								} // end if/else
+							} // end if
+							
+						} // end try/catch
+					}, 100 );
 
 				var volumeTestDefault = theAudio.volume, volumeTestValue = theAudio.volume = 0.111;
 				if( Math.round( theAudio.volume * 1000 ) / 1000 == volumeTestValue ) theAudio.volume = volumeTestDefault;

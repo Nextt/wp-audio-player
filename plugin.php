@@ -76,8 +76,8 @@ class WP_Audio_Player {
 	 */
 	public function register_plugin_styles() {
 		
-		wp_enqueue_style( 'wp-audio-player-theme', plugins_url( 'wp-audio-player/css/plugin.css' ) );
 		wp_enqueue_style( 'wp-audio-player', plugins_url( 'wp-audio-player/css/audioplayer.css' ) );
+		wp_enqueue_style( 'wp-audio-player-theme', plugins_url( 'wp-audio-player/css/plugin.css' ) );
 		
 	} // end register_plugin_styles
 
@@ -94,7 +94,7 @@ class WP_Audio_Player {
 	public function register_plugin_scripts() {
 	
 		wp_enqueue_script( 'wp-audio-player', plugins_url( 'wp-audio-player/js/audioplayer.min.js' ), array( 'jquery' ), WP_AUDIO_PLAYER_VERSION, true );
-		wp_enqueue_script( 'wp-audio-player-plugin', plugins_url( 'wp-audio-player/js/plugin.min.js' ), array( 'jquery', 'wp-audio-player' ), WP_AUDIO_PLAYER_VERSION, true );
+		wp_enqueue_script( 'wp-audio-player-plugin', plugins_url( 'wp-audio-player/js/plugin.min.js' ), array( 'wp-audio-player' ), WP_AUDIO_PLAYER_VERSION, true );
 		
 	} // end register_plugin_scripts
 
@@ -185,8 +185,10 @@ class WP_Audio_Player {
 			// Append the audio URL ot the content, if it's defined.
 			$audio_url = get_post_meta( get_the_ID(), 'wp_audio_url', true );
 			if( 0 != strlen( $audio_url ) ) {
-
-				$audio_html = '<audio src="' . esc_url ( $audio_url ) . '" preload="auto" controls class="wp-audio-player"></audio>';
+				
+				// If the user is using Firefox, we need to use `embed`
+				$audio_html = '<div id="wp-audio-player-loading">' . __( '<strong>Heads Up!</strong> It looks like you\'re trying to load a large file. Please wait...', 'wp-audio-player' ) . '</div>';
+				$audio_html .= '<audio src="' . esc_url ( $audio_url ) . '" preload="auto" controls></audio>';	
 				$content .= $audio_html;
 
 			} // end if
