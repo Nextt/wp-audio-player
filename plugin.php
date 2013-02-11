@@ -93,8 +93,8 @@ class WP_Audio_Player {
 	 */
 	public function register_plugin_scripts() {
 	
-		wp_enqueue_script( 'wp-audio-player', plugins_url( 'wp-audio-player/js/audioplayer.min.js' ), array( 'jquery' ), WP_AUDIO_PLAYER_VERSION, true );
-		wp_enqueue_script( 'wp-audio-player-plugin', plugins_url( 'wp-audio-player/js/plugin.min.js' ), array( 'wp-audio-player' ), WP_AUDIO_PLAYER_VERSION, true );
+		wp_enqueue_script( 'wp-audio-player', plugins_url( 'wp-audio-player/js/dev/audioplayer.js' ), array( 'jquery' ), WP_AUDIO_PLAYER_VERSION, false );
+		wp_enqueue_script( 'wp-audio-player-plugin', plugins_url( 'wp-audio-player/js/plugin.min.js' ), array( 'wp-audio-player' ), WP_AUDIO_PLAYER_VERSION, false );
 		
 	} // end register_plugin_scripts
 
@@ -186,9 +186,18 @@ class WP_Audio_Player {
 			$audio_url = get_post_meta( get_the_ID(), 'wp_audio_url', true );
 			if( 0 != strlen( $audio_url ) ) {
 				
-				// If the user is using Firefox, we need to use `embed`
-				$audio_html = '<div id="wp-audio-player-loading">' . __( '<strong>Heads Up!</strong> It looks like you\'re trying to load a large file. Please wait...', 'wp-audio-player' ) . '</div>';
-				$audio_html .= '<audio src="' . esc_url ( $audio_url ) . '" preload="auto" controls></audio>';	
+				//$audio_html = '<div id="wp-audio-player-loading">' . __( '<strong>Heads Up!</strong> It looks like you\'re trying to load a large audio file. Please wait...', 'wp-audio-player' ) . '</div>';
+				//$audio_html .= '<audio preload="auto" controls src="' . esc_url ( $audio_url ) . '"></audio>';	
+				$audio_html = '<audio preload="auto" controls class="wp-audio-player2">';
+					$audio_html .= '<source src="http://wpdaily.co/wp-content/uploads/2013/02/Hello-Dolly-Episode%2003.mp3" type="audio/mpeg;codecs=mp3">';
+				$audio_html .= '</audio>';
+				
+				$audio_html .= '<div class="wp-audio-player-meta">';
+					$audio_html .= '<span class="wp-audio-player-length"></span>';
+					$audio_html .= '<span class="wp-audio-player-start"></span>';
+					$audio_html .= '<span class="wp-audio-player-end"></span>';
+				$audio_html .= '</div><!-- /.wp-audio-player-meta -->';
+				
 				$content .= $audio_html;
 
 			} // end if

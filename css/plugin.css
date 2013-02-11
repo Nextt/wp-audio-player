@@ -1,2 +1,3 @@
-.wp-audio-player{width:0px;height:0px;visibility:hidden;}
+.wp-audio-player{width:0px;height:0px;display:block;}
+.wp-audio-player-meta{display:none;}
 #wp-audio-player-loading{color:#3a87ad;background-color:#d9edf7;padding:8px 35px 8px 13px;text-shadow:0 1px 0 rgba(255, 255, 255, 0.5);border:1px solid #bce8f1;border-radius:4px;-moz-border-radius:4px;-webkit-border-radius:4px;}
