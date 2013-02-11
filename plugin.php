@@ -101,7 +101,7 @@ class WP_Audio_Player {
 	 */
 	public function register_plugin_scripts() {
 	
-		wp_enqueue_script( 'wp-audio-player', plugins_url( 'wp-audio-player/js/dev/audioplayer.js' ), array( 'jquery' ), WP_AUDIO_PLAYER_VERSION, false );
+		wp_enqueue_script( 'wp-audio-player', plugins_url( 'wp-audio-player/js/audioplayer.min.js' ), array( 'jquery' ), WP_AUDIO_PLAYER_VERSION, false );
 		wp_enqueue_script( 'wp-audio-player-plugin', plugins_url( 'wp-audio-player/js/plugin.min.js' ), array( 'wp-audio-player' ), WP_AUDIO_PLAYER_VERSION, false );
 		
 	} // end register_plugin_scripts
@@ -225,7 +225,7 @@ class WP_Audio_Player {
 				
 					$audio_html = '<div class="wp-audio-player-firefox">';
 						$audio_html .= '<embed src="' . esc_url ( $audio_url ) . '" />';
-						$audio_html .= '<div class="wp-audio-player-notice">' . __( "<strong>Heads up!</strong> Firefox doesn't support WP Audio Player, so it's using the basic player.", 'wp-audio-player' ) . '</div>';
+						$audio_html .= '<div class="wp-audio-player-notice">' . __( "<strong>Heads up!</strong> This browser doesn't support WP Audio Player, so it's using the basic player.", 'wp-audio-player' ) . '</div>';
 					$audio_html .= '</div>';
 				
 				// Otherwise, we are good to go with the fancy-schmancy player so let's do it!
