@@ -51,6 +51,7 @@ class WP_Audio_Player {
 		add_action( 'init', array( $this, 'plugin_textdomain' ) );
 
 		// Register site styles and scripts
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_admin_scripts' ) );
 		add_action( 'admin_print_styles', array( $this, 'register_admin_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_plugin_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_plugin_scripts' ) );
@@ -80,6 +81,13 @@ class WP_Audio_Player {
 		wp_enqueue_style( 'wp-audio-player-theme', plugins_url( 'wp-audio-player/css/plugin.css' ) );
 		
 	} // end register_plugin_styles
+	
+	/**
+	 * Registers and enqueues admin-specific scripts.
+	 */
+	public function register_admin_scripts() {
+		wp_enqueue_script( 'wp-audio-player-meta', plugins_url( 'wp-audio-player/js/admin.min.js' ) );
+	} // end register_admin_scripts
 
 	/**
 	 * Registers and enqueues admin-specific styles.
@@ -134,10 +142,36 @@ class WP_Audio_Player {
 
 		wp_nonce_field( plugin_basename( __FILE__ ), $this->audio_player_nonce );
 
-		$html  = '<span class="description">';
+		$html  = '<p class="description">';
 			$html .= __( 'Place the URL to your audio file here.', 'wp-audio-player' );
-		$html .= '</span>';
+		$html .= '</p>';
 		$html .= '<input type="text" id="wp_audio_url" name="wp_audio_url" value="' . esc_url( get_post_meta( $post->ID, 'wp_audio_url', true ) ) . '" />';
+		
+		// If there has MP3's in the Media Library, give them that option.
+		if( $this->has_mp3_files() ) {
+		
+			// Grab the query for the MP3 files
+			$media = $this->get_mp3_files();
+		
+			$html  .= '<p class="description">';
+				$html .= __( 'Or select an MP3 from your media library.', 'wp-audio-player' );
+			$html .= '</p>';
+			$html .= '<select id="wp-audio-player-media" name="wp-audio-player-media" multiple>';
+				
+				// Build up the list of MP#3 files
+				while( $media->have_posts() ) {
+				
+					$media->the_post();
+					
+					global $post;
+					$html .= '<option value="' . $post->guid . '" ' . selected( $post->guid, esc_url( get_post_meta( $post->ID, 'wp_audio_url', true ) ), false ) . '>' . get_the_title() . '</option>';
+					
+				} // end while
+				wp_reset_postdata();
+				
+			$html .= '</select><!-- /#wp-audio-player-media -->';
+		
+		} // end if 
 
 		echo $html;
 
@@ -270,6 +304,37 @@ class WP_Audio_Player {
 	private function user_is_using_firefox() {
 		return false != stristr( $_SERVER['HTTP_USER_AGENT'], 'firefox' );
 	} // end is_firefox
+	
+	/**
+	 * Creates an array of all of the media uploads the user has.
+	 *
+	 * @return		The array of MP3's in the user's media library
+	 * @version		1.0
+	 * @since		1.4
+	 */
+	private function get_mp3_files() {
+		
+		$args = array(
+			'post_type'			=>	'attachment',
+			'post_mime_type'	=>	'audio/mpeg',
+			'post_status'		=>	'inherit'
+		);
+		$media_query = new WP_Query( $args );
+
+		return $media_query;
+		
+	} // end get_mp3_files
+	
+	/**
+	 * Determines if there are any files stored in the database.
+	 *
+	 * @return		True if there are MP3's in the media library; false, otherwise.
+	 * @version		1.0
+	 * @since		1.4
+	 */
+	private function has_mp3_files() {
+		return 0 < $this->get_mp3_files()->found_posts;
+	} // end has_mp3_files
 
 } // end class
 
