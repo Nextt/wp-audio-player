@@ -186,17 +186,28 @@ class WP_Audio_Player {
 			$audio_url = get_post_meta( get_the_ID(), 'wp_audio_url', true );
 			if( 0 != strlen( $audio_url ) ) {
 				
-				//$audio_html = '<div id="wp-audio-player-loading">' . __( '<strong>Heads Up!</strong> It looks like you\'re trying to load a large audio file. Please wait...', 'wp-audio-player' ) . '</div>';
-				//$audio_html .= '<audio preload="auto" controls src="' . esc_url ( $audio_url ) . '"></audio>';	
-				$audio_html = '<audio preload="auto" controls class="wp-audio-player2">';
-					$audio_html .= '<source src="http://wpdaily.co/wp-content/uploads/2013/02/Hello-Dolly-Episode%2003.mp3" type="audio/mpeg;codecs=mp3">';
-				$audio_html .= '</audio>';
+				// Firefox doesn't support MP3's. Sad story. Give them an option to use the embed.
+				if( $this->user_is_using_firefox() ) {
 				
-				$audio_html .= '<div class="wp-audio-player-meta">';
-					$audio_html .= '<span class="wp-audio-player-length"></span>';
-					$audio_html .= '<span class="wp-audio-player-start"></span>';
-					$audio_html .= '<span class="wp-audio-player-end"></span>';
-				$audio_html .= '</div><!-- /.wp-audio-player-meta -->';
+					$audio_html = '<div class="wp-audio-player-firefox">';
+						$audio_html .= '<embed src="' . esc_url ( $audio_url ) . '" />';
+						$audio_html .= '<div class="wp-audio-player-notice">' . __( "<strong>Heads up!</strong> Firefox doesn't support WP Audio Player, so it's using the basic player.", 'wp-audio-player' ) . '</div>';
+					$audio_html .= '</div>';
+				
+				// Otherwise, we are good to go with the fancy-schmancy player so let's do it!
+				} else {
+				
+					// Actually write out the meta data
+					$audio_html = '<audio preload="auto" controls src="' . esc_url ( $audio_url ) . '" class="wp-audio-player"></audio>';
+					
+					// Add the meta data to the plugin
+					$audio_html .= '<div class="wp-audio-player-meta">';
+						$audio_html .= '<span class="wp-audio-player-length"></span>';
+						$audio_html .= '<span class="wp-audio-player-start"></span>';
+						$audio_html .= '<span class="wp-audio-player-end"></span>';
+					$audio_html .= '</div><!-- /.wp-audio-player-meta -->';
+				
+				} // end if/else
 				
 				$content .= $audio_html;
 
@@ -248,6 +259,17 @@ class WP_Audio_Player {
 	    return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
 	
 	} // end user_can_save
+	
+	/**
+	 * Determines whether or not the user is using Firefox to view the page
+	 *
+	 * @return		True if the user is using Firefox; false, otherwise.
+	 * @version		1.0
+	 * @since		1.4
+	 */
+	private function user_is_using_firefox() {
+		return false != stristr( $_SERVER['HTTP_USER_AGENT'], 'firefox' );
+	} // end is_firefox
 
 } // end class
 

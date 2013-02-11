@@ -53,10 +53,7 @@
 				return false;
 
 			var $this	   = $( this ),
-				//audioFile  = $this.attr( 'src' ),
-				/* WP Audio Player */
-				audioFile = $this.children('source').attr('src');
-				/* WP Audio Player */
+				audioFile  = $this.attr( 'src' ),
 				isAutoPlay = $this.get( 0 ).getAttribute( 'autoplay' ), isAutoPlay = isAutoPlay === '' || isAutoPlay === 'autoplay' ? true : false,
 				isLoop	   = $this.get( 0 ).getAttribute( 'loop' ),		isLoop	   = isLoop		=== '' || isLoop	 === 'loop'		? true : false,
 				isSupport  = false;
