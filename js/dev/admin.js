@@ -1,12 +1,16 @@
 (function($) {
 	"use strict";
-	$(function() {
 	
-		$('#wp-audio-player-media')
-			.children('option')
-			.click(function(evt) {
-				$('input#wp_audio_url').val( $(this).val() );
-			});
+	$(function() {
+		
+		$('#wp-audio-player-media').click(function() {
+
+			if( null !== $(this).val() && '' !== $.trim( $(this).val() ) ) {
+				$('input[type="text"]#wp_audio_url').val( $(this).val() );
+			} // end if
+			
+		});
 		
 	});
+	
 }(jQuery));
