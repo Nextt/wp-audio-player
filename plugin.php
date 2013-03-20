@@ -238,7 +238,7 @@ class WP_Audio_Player {
 				if( $this->user_is_using_firefox() ) {
 				
 					$audio_html = '<div class="wp-audio-player-firefox">';
-						$audio_html .= '<embed src="' . esc_url ( $audio_url ) . '" />';
+						$audio_html .= '<embed src="' . esc_url ( $audio_url ) . '" autostart="false" />';
 					$audio_html .= '</div>';
 				
 				// Otherwise, we are good to go with the fancy-schmancy player so let's do it!
