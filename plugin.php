@@ -26,6 +26,8 @@ License:
 
 */
 
+include_once( 'lib/Mobile_Detect.class.php' );
+
 if( ! defined( 'WP_AUDIO_PLAYER_VERSION' ) ) {
 	define( 'WP_AUDIO_PLAYER_VERSION', '1.9' );
 } // end if
@@ -36,7 +38,9 @@ class WP_Audio_Player {
 	 * Attributes
 	 *--------------------------------------------*/
 
-	 private $audio_player_nonce = 'wp_audio_player_nonce';
+	private $audio_player_nonce = 'wp_audio_player_nonce';
+	
+	private $detect;
 
 	/*--------------------------------------------*
 	 * Constructor
@@ -46,6 +50,8 @@ class WP_Audio_Player {
 	 * Initializes the plugin by setting localization, filters, and administration functions.
 	 */
 	public function __construct() {
+
+		$this->detect = new Mobile_Detect();
 
 		// Load plugin text domain
 		add_action( 'init', array( $this, 'plugin_textdomain' ) );
@@ -251,7 +257,7 @@ add_action('wp_head', 'add_ie_html5_shim');
 			if( 0 != strlen( $audio_url ) ) {
 				
 				// Firefox doesn't support MP3's. Sad story. Give them an option to use the embed.
-				if( $this->user_is_using_firefox() ) {
+				if( $this->detect->isMobile() || $this->user_is_using_firefox() ) {
 				
 					$audio_html = '<div class="wp-audio-player-firefox">';
 						$audio_html .= '<embed src="' . esc_url ( $audio_url ) . '" autostart="false" />';
@@ -266,7 +272,7 @@ add_action('wp_head', 'add_ie_html5_shim');
 									
 				// Otherwise, we are good to go with the fancy-schmancy player so let's do it!
 				} else {
-				
+								
 					// Actually write out the meta data
 					$audio_html = '<audio preload="auto" controls src="' . esc_url ( $audio_url ) . '" class="wp-audio-player"></audio>';
 					
