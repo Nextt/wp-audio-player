@@ -148,13 +148,20 @@ add_action('wp_head', 'add_ie_html5_shim');
 			'show_in_nav_menus'   => true
 		);
 
+		$post_types = get_post_types( $args );
+		$post_types[] = 'page';
+
+		//Allow people to override what post types have the metabox
+		$post_types = apply_filters( 'wp-audio_display_audio_url_post_types', $post_types );
+
+
 		// Next, build up the string used to represent the post types
-		foreach( get_post_types( $args ) as $post_type ) {
+		foreach($post_types as $post_type ) {
 			$this->add_meta_box( $post_type );
 		} // end foreach
 
 		// And finally add support for pages
-		$this->add_meta_box( 'page' );
+		// $this->add_meta_box( 'page' );
 
 	} // end display_audio_url
 
